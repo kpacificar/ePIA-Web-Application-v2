@@ -1,0 +1,21 @@
+/* NavBar Styles */
+/* Bootstrap classes will handle most styling */
+
+.navbar .btn {
+  margin-right: 1rem;
+}
+
+@media (max-width: 992px) {
+  .nav-item-list .btn.btn-primary {
+    margin-bottom: 1rem;
+  }
+
+  .navbar .btn {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .navbar button {
+    margin-right: 1rem;
+  }
+}

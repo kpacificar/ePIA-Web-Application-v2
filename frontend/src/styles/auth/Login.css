@@ -1,0 +1,81 @@
+/* Login Styles */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  align-items: center;
+  justify-content: center;
+  background-image: url("/static/images/banner-background.jpg"),
+    linear-gradient(#36bef2, #a3afe2);
+  background-size: cover;
+  background-color: rgb(54, 190, 242);
+  background-position-x: 50%;
+  background-position-y: 50%;
+  min-height: calc(100vh - 5rem);
+  position: relative;
+}
+
+@media (max-height: 851px) {
+  .login-container {
+    min-height: 850px;
+  }
+}
+
+.login-form {
+  background-color: white;
+  padding: 4rem 4rem 0rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  width: 500px;
+}
+
+.login-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-form.login-input a {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  display: block;
+  text-align: center;
+}
+
+.signup-link {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  border-bottom-left-radius: 2rem;
+  border-bottom-right-radius: 2rem;
+  background-color: #f0f3fc;
+  text-align: center;
+}
+
+.login-input {
+  border-top-left-radius: 2rem;
+  border-top-right-radius: 2rem;
+}
+
+.login-form button {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+/* Form error styling */
+.errorlist {
+  display: flex;
+  background-color: #f8d7da;
+  border: 2px solid #f1aeb5;
+  padding: 0.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  text-align: justify;
+}
+
+.login-container .errorlist li {
+  width: 90%;
+  margin-left: 1rem;
+}

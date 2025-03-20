@@ -1,0 +1,74 @@
+/* Packages Styles */
+.moward-packages {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f9f9f9;
+  padding-top: 6rem;
+  padding-bottom: 4rem;
+  position: relative;
+  scroll-margin-top: 80px;
+}
+
+.marker {
+  position: absolute;
+  top: -80px;
+}
+
+.moward-packages h2 {
+  margin-bottom: 1rem;
+}
+
+.moward-packages > p {
+  text-align: center;
+  width: 70%;
+}
+
+.package-col {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  width: 70%;
+}
+
+.package-item {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 45%;
+  background-color: #e8ebfa;
+  border: 2px solid;
+  border-color: #d1daf9;
+  padding: 2rem;
+  border-radius: 2rem;
+  box-shadow: 2px 2px 2px rgb(0, 0, 0, 0.5);
+}
+
+.package-item .btn {
+  align-self: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.package-item p {
+  text-align: justify;
+}
+
+.package-item h4 {
+  margin-top: 1rem;
+}
+
+.package-item li {
+  padding-top: 0.5rem;
+}
+
+.inclusions {
+  margin-top: 1.5rem;
+}
+
+.inclusions h4 {
+  margin-bottom: 1rem;
+}
+
+.inclusions ul {
+  padding-left: 1.5rem;
+}

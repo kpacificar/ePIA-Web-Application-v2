@@ -1,0 +1,113 @@
+/* Footer Styles */
+.main-footer {
+  background-color: rgb(242, 242, 242);
+  padding: 1.5rem 1.5rem;
+}
+
+.footer-row {
+  display: flex;
+  width: 80%;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin: auto;
+  gap: 4%;
+}
+
+#moward-footer-logo {
+  width: 210px;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.footer-col {
+  flex-basis: 23%;
+  margin-bottom: 30px;
+}
+
+.footer-col.w80 {
+  width: 80%;
+  margin: 0px;
+}
+
+.footer-col-2 {
+  flex-basis: 46%;
+  min-width: 200px;
+  margin-bottom: 30px;
+}
+
+.footer-col.data-protection {
+  min-width: 210px;
+}
+
+.footer-col .small-text {
+  text-align: justify;
+  font-size: 0.8em;
+  margin-bottom: 0.8em;
+}
+
+.footer-col h3,
+.footer-col-2 h3 {
+  width: fit-content;
+  margin-bottom: 25px;
+  position: relative;
+}
+
+.footer-col p,
+.footer-col-2 p {
+  padding: 0px;
+  margin: 0px;
+}
+
+.email-id {
+  width: fit-content;
+  border-bottom: 1px solid black;
+  margin: 20px 0;
+}
+
+.footer-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 0.5em;
+}
+
+.footer-col-2 .form {
+  padding-top: 0.5em;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: left;
+}
+
+.footer-col-2 .form .fa-envelope {
+  font-size: 18px;
+  margin-right: 10px;
+}
+
+.footer-col-2 .form input {
+  width: 80%;
+  margin-right: 10px;
+}
+
+.footer-col-2 .form button {
+  margin: 0;
+}
+
+.copyright-hr {
+  width: 80%;
+  border: 0;
+  border-bottom: 1px solid black;
+  margin: 20px auto;
+}
+
+.copyright {
+  text-align: center;
+}
+
+.footer-row hr {
+  width: 100%;
+  border: 0;
+  border-bottom: 2px solid black;
+  align-self: left;
+  margin: -0.4em 0 1em 0;
+}

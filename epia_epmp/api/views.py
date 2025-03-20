@@ -3,9 +3,9 @@ from django.contrib.auth.models import User
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import UserSerializer, NoteSerializer
+from .serializers import UserSerializer, NoteSerializer, UserCompanySerializer, CompanySerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import Note
+from .models import Note, UserCompany, Company
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
@@ -46,6 +46,15 @@ class CreateUserView(generics.CreateAPIView):
                 "user": UserSerializer(user, context=self.get_serializer_context()).data
             }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserCompanyView(generics.RetrieveUpdateAPIView):
+    serializer_class = UserCompanySerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return UserCompany.objects.get(user=self.request.user)
+
 
 class EmailTokenObtainPairView(APIView):
     """

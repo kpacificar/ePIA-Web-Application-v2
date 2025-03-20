@@ -9,6 +9,9 @@ function Form({ route, method }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [companyName, setCompanyName] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -43,6 +46,21 @@ function Form({ route, method }) {
         formIsValid = false;
         tempErrors["password2"] = "Passwords do not match";
       }
+
+      if (!firstName) {
+        formIsValid = false;
+        tempErrors["firstName"] = "First name is required";
+      }
+
+      if (!lastName) {
+        formIsValid = false;
+        tempErrors["lastName"] = "Last name is required";
+      }
+
+      if (!companyName) {
+        formIsValid = false;
+        tempErrors["companyName"] = "Company name is required";
+      }
     }
 
     setErrors(tempErrors);
@@ -62,6 +80,9 @@ function Form({ route, method }) {
       const userData = { email, password };
       if (method === "register") {
         userData.password2 = password2;
+        userData.first_name = firstName;
+        userData.last_name = lastName;
+        userData.company_name = companyName;
       }
 
       const res = await api.post(route, userData);
@@ -88,6 +109,46 @@ function Form({ route, method }) {
   return (
     <form onSubmit={handleSubmit} className="form-container">
       <h1>{name}</h1>
+      {method === "register" && (
+        <>
+          <div className="form-group">
+            <input
+              className="form-input"
+              type="text"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="First Name"
+            />
+            {errors.firstName && (
+              <div className="error-message">{errors.firstName}</div>
+            )}
+          </div>
+          <div className="form-group">
+            <input
+              className="form-input"
+              type="text"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Last Name"
+            />
+            {errors.lastName && (
+              <div className="error-message">{errors.lastName}</div>
+            )}
+          </div>
+          <div className="form-group">
+            <input
+              className="form-input"
+              type="text"
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
+              placeholder="Company Name"
+            />
+            {errors.companyName && (
+              <div className="error-message">{errors.companyName}</div>
+            )}
+          </div>
+        </>
+      )}
       <div className="form-group">
         <input
           className="form-input"

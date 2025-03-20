@@ -1,0 +1,29 @@
+/* FAQ Styles */
+.moward-faq {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4em;
+  margin: 6em 6em;
+}
+
+.img-container {
+  margin-right: 2rem;
+  max-width: 40%;
+}
+
+.img-container img {
+  max-width: 100%;
+  height: auto;
+}
+
+.faq-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: justify;
+}
+
+.faq-col h2 {
+  margin-bottom: 1em;
+}

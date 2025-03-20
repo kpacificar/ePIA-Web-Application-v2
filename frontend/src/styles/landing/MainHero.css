@@ -1,0 +1,36 @@
+/* Main Hero Styles */
+.moward-epia {
+  background-image: url("/static/images/banner-background.jpg"),
+    linear-gradient(#36bef2, #a3afe2);
+  background-size: cover;
+  background-color: rgb(54, 190, 242);
+  background-position-x: 50%;
+  background-position-y: 50%;
+  min-height: 600px;
+  position: relative;
+  color: white;
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.moward-epia h1 {
+  font-size: 3rem;
+  margin-bottom: 0.5em;
+}
+
+.color-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.moward-epia p {
+  width: 70%;
+  text-align: center;
+}
+
+.moward-epia .button a {
+  margin-right: 0.5em;
+  margin-left: 0.5em;
+  font-size: 20px;
+}
