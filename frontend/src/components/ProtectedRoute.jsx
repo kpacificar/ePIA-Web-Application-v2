@@ -20,7 +20,7 @@ function ProtectedRoute({ children }) {
         refresh: refreshToken,
       });
       if (res.status === 200) {
-        localStorage.setItem(ACESS_TOKEN, res.data.access);
+        localStorage.setItem(ACCESS_TOKEN, res.data.access);
         setIsAuthorized(true);
       }
     } catch (error) {
