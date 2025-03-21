@@ -24,26 +24,61 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Layout isAuthenticated={isAuthenticated}>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              isAuthenticated ? (
+      <Routes>
+        {/* Public routes with NavBar */}
+        <Route
+          path="/login"
+          element={
+            <Layout isAuthenticated={false}>
+              <Login />
+            </Layout>
+          }
+        />
+        <Route
+          path="/logout"
+          element={
+            <Layout isAuthenticated={false}>
+              <Logout />
+            </Layout>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <Layout isAuthenticated={false}>
+              <RegisterAndLogout />
+            </Layout>
+          }
+        />
+
+        {/* LandingPage with NavBar */}
+        <Route
+          path="/"
+          element={
+            isAuthenticated ? (
+              <Layout isAuthenticated={true}>
                 <ProtectedRoute>
                   <Home />
                 </ProtectedRoute>
-              ) : (
+              </Layout>
+            ) : (
+              <Layout isAuthenticated={false}>
                 <LandingPage />
-              )
-            }
-          />
-          <Route path="/login" element={<Login />} />
-          <Route path="/logout" element={<Logout />} />
-          <Route path="/signup" element={<RegisterAndLogout />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Layout>
+              </Layout>
+            )
+          }
+        />
+
+        {/* Catch-all route */}
+        <Route
+          path="*"
+          element={
+            <Layout isAuthenticated={false}>
+              <NotFound />
+            </Layout>
+          }
+        />
+      </Routes>
     </BrowserRouter>
   );
 }

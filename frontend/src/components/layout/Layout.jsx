@@ -5,7 +5,8 @@ import "../../styles/layout/Layout.css";
 const Layout = ({ children, isAuthenticated }) => {
   return (
     <div className="layout">
-      <NavBar />
+      {!isAuthenticated && <NavBar />}
+
       {isAuthenticated ? (
         <div className="authenticated-content">{children}</div>
       ) : (

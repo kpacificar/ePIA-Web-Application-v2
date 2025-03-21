@@ -1,6 +1,18 @@
 /* NavBar Styles */
 /* Bootstrap classes will handle most styling */
 
+.navbar.navbar-expand-lg {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar.bg-body-tertiary {
+  box-shadow: none;
+}
+
+.navbar .navbar-brand {
+  box-shadow: none;
+}
+
 .navbar .btn {
   margin-right: 1rem;
 }

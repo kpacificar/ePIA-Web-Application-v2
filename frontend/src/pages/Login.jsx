@@ -1,14 +1,14 @@
-import Form from "../components/Form";
-import { Link } from "react-router-dom";
+import LoginForm from "../components/LoginForm";
+import Footer from "../components/layout/Footer";
 import "../styles/Form.css";
 
 export default function Login() {
   return (
-    <div className="auth-container">
-      <Form route="/api/token/" method="login" />
-      <div className="auth-link">
-        Don't have an account? <Link to="/register">Register</Link>
+    <>
+      <div className="auth-container">
+        <LoginForm />
       </div>
-    </div>
+      <Footer />
+    </>
   );
 }

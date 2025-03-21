@@ -71,6 +71,10 @@
   margin-top: 0.5em;
 }
 
+.footer-container input[type="checkbox"] {
+  margin-right: 8px;
+}
+
 .footer-col-2 .form {
   padding-top: 0.5em;
   display: flex;
@@ -87,6 +91,7 @@
 .footer-col-2 .form input {
   width: 80%;
   margin-right: 10px;
+  border-radius: 8px;
 }
 
 .footer-col-2 .form button {
@@ -110,4 +115,10 @@
   border-bottom: 2px solid black;
   align-self: left;
   margin: -0.4em 0 1em 0;
+}
+
+#form-input-footer {
+  border-radius: 4px;
+  padding-left: 6px;
+  padding-right: 6px;
 }

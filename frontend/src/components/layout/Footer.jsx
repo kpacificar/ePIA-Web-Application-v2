@@ -58,6 +58,7 @@ const Footer = () => {
               name="email"
               required
               placeholder="Enter your email"
+              id="form-input-footer"
             />
             <button type="submit">
               <i className="fa-solid fa-arrow-right"></i>

@@ -1,14 +1,14 @@
-import Form from "../components/Form";
-import { Link } from "react-router-dom";
+import RegisterForm from "../components/RegisterForm";
+import Footer from "../components/layout/Footer";
 import "../styles/Form.css";
 
 export default function Register() {
   return (
-    <div className="auth-container">
-      <Form route="/api/user/register/" method="register" />
-      <div className="auth-link">
-        Already have an account? <Link to="/login">Login</Link>
+    <>
+      <div className="auth-container">
+        <RegisterForm />
       </div>
-    </div>
+      <Footer />
+    </>
   );
 }

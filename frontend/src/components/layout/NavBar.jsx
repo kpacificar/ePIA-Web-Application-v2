@@ -1,8 +1,20 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import "../../styles/layout/NavBar.css";
 
 const NavBar = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Check if there's a hash in the URL
+    if (location.hash) {
+      // Get the ID without the # symbol
+      const id = location.hash.substring(1);
+      scrollToSection(id);
+    }
+  }, [location]);
+
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
     if (element) {
@@ -16,6 +28,7 @@ const NavBar = () => {
         <div className="container p-0">
           <Link className="navbar-brand p-0 m-0" to="/">
             <img
+              id="navbar-image"
               src="/static/images/moward-epia-logo.jpg"
               alt="Moward E-PIA"
               width="auto"
@@ -44,28 +57,34 @@ const NavBar = () => {
         <div className="nav-item-list">
           <ul className="navbar-nav mr-auto">
             <li className="nav-item d-flex justify-content-center mx-2">
-              <a
+              <Link
                 className="nav-link"
-                href="#package"
+                to="/#package"
                 onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection("package");
+                  // If we're already on the home page, prevent default and scroll
+                  if (location.pathname === "/") {
+                    e.preventDefault();
+                    scrollToSection("package");
+                  }
                 }}
               >
                 Package
-              </a>
+              </Link>
             </li>
             <li className="nav-item d-flex justify-content-center mx-2">
-              <a
+              <Link
                 className="nav-link"
-                href="#faq"
+                to="/#faq"
                 onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection("faq");
+                  // If we're already on the home page, prevent default and scroll
+                  if (location.pathname === "/") {
+                    e.preventDefault();
+                    scrollToSection("faq");
+                  }
                 }}
               >
                 FAQs
-              </a>
+              </Link>
             </li>
             <li className="nav-item d-flex justify-content-center mx-2">
               <Link className="nav-link" to="/login">
