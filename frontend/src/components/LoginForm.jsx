@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "../api";
 import { useNavigate, Link } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
@@ -10,7 +10,23 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [isRateLimited, setIsRateLimited] = useState(false);
+  const [cooldownTime, setCooldownTime] = useState(0);
   const navigate = useNavigate();
+
+  // Handle countdown timer for rate limiting
+  useEffect(() => {
+    let timer;
+    if (isRateLimited && cooldownTime > 0) {
+      timer = setTimeout(() => {
+        setCooldownTime((prevTime) => prevTime - 1);
+      }, 1000);
+    } else if (cooldownTime === 0 && isRateLimited) {
+      setIsRateLimited(false);
+    }
+
+    return () => clearTimeout(timer);
+  }, [cooldownTime, isRateLimited]);
 
   const validateForm = () => {
     let tempErrors = {};
@@ -39,7 +55,7 @@ function LoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validateForm()) {
+    if (!validateForm() || isRateLimited) {
       return;
     }
 
@@ -52,7 +68,29 @@ function LoginForm() {
       localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
       navigate("/");
     } catch (error) {
-      if (error.response && error.response.data) {
+      // Handle rate limiting errors
+      if (error.response && error.response.status === 429) {
+        setIsRateLimited(true);
+
+        // Extract cooldown time if available in the error message
+        const message = error.response.data.detail || "";
+        const timeMatch = message.match(/(\d+) seconds/);
+
+        if (timeMatch && timeMatch[1]) {
+          setCooldownTime(parseInt(timeMatch[1]));
+        } else {
+          // Default cooldown time if not specified
+          setCooldownTime(60);
+        }
+
+        setErrors({
+          non_field_errors: [
+            "Too many login attempts. Please try again later.",
+          ],
+        });
+      }
+      // Handle authentication errors
+      else if (error.response && error.response.data) {
         if (error.response.data.detail) {
           setErrors({
             non_field_errors: [error.response.data.detail],
@@ -81,6 +119,7 @@ function LoginForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="youremail@domain.com"
+          disabled={isRateLimited}
         />
       </div>
       <div className="form-group">
@@ -91,17 +130,28 @@ function LoginForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Enter your password"
+          disabled={isRateLimited}
         />
       </div>
 
+      {/* Display rate limit warning */}
+      {isRateLimited && (
+        <div className="error-message rate-limit-error">
+          <p>Too many login attempts.</p>
+          {cooldownTime > 0 && (
+            <p>Please wait {cooldownTime} seconds before trying again.</p>
+          )}
+        </div>
+      )}
+
       {/* Display all errors in the same format */}
-      {errors.email && (
+      {!isRateLimited && errors.email && (
         <div className="error-message general-error">{errors.email}</div>
       )}
-      {errors.password && (
+      {!isRateLimited && errors.password && (
         <div className="error-message general-error">{errors.password}</div>
       )}
-      {errors.non_field_errors && (
+      {!isRateLimited && errors.non_field_errors && (
         <div className="error-message general-error">
           {errors.non_field_errors.map((error, index) => (
             <div key={index}>{error}</div>
@@ -110,8 +160,16 @@ function LoginForm() {
       )}
 
       {loading && <LoadingIndicator />}
-      <button className="form-button" type="submit" disabled={loading}>
-        {loading ? "Logging in..." : "Log in"}
+      <button
+        className="form-button"
+        type="submit"
+        disabled={loading || isRateLimited}
+      >
+        {loading
+          ? "Logging in..."
+          : isRateLimited
+          ? `Try again in ${cooldownTime}s`
+          : "Log in"}
       </button>
       <a href="#" className="forgot-password">
         Forgot Password?

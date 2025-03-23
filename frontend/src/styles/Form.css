@@ -158,10 +158,13 @@ input[type="url"] {
 }
 
 .error-message {
-  color: #dc3545;
-  font-size: 0.85rem;
-  margin-top: 5px;
-  text-align: left;
+  color: #721c24;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  text-align: center;
   width: 100%;
 }
 
@@ -174,6 +177,12 @@ input[type="url"] {
   margin: 10px 0;
   width: 100%;
   text-align: center;
+}
+
+.error-message.general-error {
+  margin-bottom: 8px;
+  border-radius: 8px;
+  margin-top: 0;
 }
 
 h1 {
@@ -253,4 +262,18 @@ label {
   display: block;
   font-weight: 500;
   margin-bottom: 0.5rem;
+}
+
+/* Special styling for rate limit errors */
+.rate-limit-error {
+  background-color: #fff3cd;
+  color: #856404;
+  border-color: #ffeeba;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.rate-limit-error p {
+  margin: 0.25rem 0;
 }
