@@ -7,6 +7,11 @@ import { ACCESS_TOKEN } from "./constants";
 
 const apiUrl = "/choreo-apis/epia-epmp/epiaepmp/v1";
 
+// Constants for localStorage keys (same as in LoginForm)
+const RATE_LIMIT_KEY = "login_rate_limited";
+const COOLDOWN_TIME_KEY = "login_cooldown_time";
+const COOLDOWN_END_KEY = "login_cooldown_end_time";
+
 // Create a custom event for rate limiting
 export const rateLimitEvent = new Event("rateLimitDetected");
 
@@ -39,13 +44,20 @@ api.interceptors.response.use(
       // Dispatch custom event that components can listen for
       window.dispatchEvent(rateLimitEvent);
 
-      // Extract the retry-after header if present
-      const retryAfter = error.response.headers["retry-after"];
-      if (retryAfter) {
-        error.retryAfter = parseInt(retryAfter, 10);
-      }
+      // Get remaining seconds from the response
+      const remainingSeconds = error.response.data.remaining_seconds || 60;
 
-      // You can set up global notification here if needed
+      // Store rate limit info in localStorage
+      localStorage.setItem(RATE_LIMIT_KEY, "true");
+      localStorage.setItem(COOLDOWN_TIME_KEY, remainingSeconds.toString());
+      localStorage.setItem(
+        COOLDOWN_END_KEY,
+        (Date.now() + remainingSeconds * 1000).toString()
+      );
+
+      // Add the remaining seconds to the error object for components to use
+      error.remainingSeconds = remainingSeconds;
+
       console.warn("Rate limit reached:", error.response.data.detail);
     }
 

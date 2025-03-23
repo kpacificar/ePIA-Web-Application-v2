@@ -13,6 +13,8 @@ from django.utils import timezone
 import datetime
 from django.core.mail import send_mail
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 
 
 class NoteListCreate(generics.ListCreateAPIView):
@@ -86,9 +88,13 @@ class EmailTokenObtainPairView(APIView):
         ip_address = self.get_client_ip(request)
         
         # Check if IP is blocked
-        if self.is_ip_blocked(ip_address):
+        is_blocked, remaining_seconds = self.is_ip_blocked(ip_address)
+        if is_blocked:
             return Response(
-                {"detail": "Your IP has been temporarily blocked due to too many failed login attempts. Try again later."},
+                {
+                    "detail": "Your IP has been temporarily blocked due to too many failed login attempts.",
+                    "remaining_seconds": remaining_seconds
+                },
                 status=status.HTTP_429_TOO_MANY_REQUESTS
             )
         
@@ -152,7 +158,7 @@ class EmailTokenObtainPairView(APIView):
             cache.set(f"ip_blocked_{ip_address}", block_until, timeout=60*15)
         
         # Store failed attempts for 1 hour
-        cache.set(cache_key, failed_attempts, timeout=60*60)
+        cache.set(cache_key, failed_attempts, timeout=60)
     
     def reset_failed_attempts(self, ip_address):
         """Reset failed login attempts after successful login"""
@@ -160,14 +166,16 @@ class EmailTokenObtainPairView(APIView):
         cache.delete(cache_key)
     
     def is_ip_blocked(self, ip_address):
-        """Check if an IP address is blocked"""
+        """Check if an IP address is blocked and return remaining seconds"""
         cache_key = f"ip_blocked_{ip_address}"
         block_until = cache.get(cache_key)
         
         if block_until and timezone.now() < block_until:
-            return True
+            # Calculate remaining seconds
+            remaining_seconds = int((block_until - timezone.now()).total_seconds())
+            return True, remaining_seconds
         
-        return False
+        return False, 0
 
     def check_suspicious_activity(self, email, ip_address, user_agent):
         """Check for suspicious login activity"""
@@ -240,11 +248,60 @@ def custom_exception_handler(exc, context):
         wait_time = getattr(exc, 'wait', None)
         if wait_time:
             error_message = f'Too many attempts. Please try again in {wait_time} seconds.'
+            # Include the remaining seconds in the response for frontend to use
+            response.data = {
+                'detail': error_message,
+                'remaining_seconds': int(wait_time)
+            }
         else:
             error_message = 'Too many attempts. Please try again later.'
-            
-        response.data = {
-            'detail': error_message
-        }
+            response.data = {
+                'detail': error_message
+            }
         
     return response
+
+# Developer-only endpoint to reset rate limiting
+@csrf_exempt
+def dev_reset_rate_limits(request):
+    """Reset rate limiting for development purposes only"""
+    # Only available in DEBUG mode for security
+    if not settings.DEBUG:
+        return JsonResponse({"error": "This endpoint is only available in debug mode"}, status=403)
+        
+    if request.method != 'POST':
+        return JsonResponse({"error": "Only POST method is allowed"}, status=405)
+    
+    # Require a special developer token in the request
+    dev_token = request.POST.get('dev_token') or request.headers.get('X-Dev-Token')
+    if not dev_token or dev_token != getattr(settings, 'DEVELOPER_TOKEN', None):
+        # Return same error as 404 to hide the endpoint existence
+        return JsonResponse({"error": "Not Found"}, status=404)
+        
+    # Get client IP address
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+        
+    # Clear rate limiting for this IP
+    cache.delete(f"failed_login_{ip}")
+    cache.delete(f"ip_blocked_{ip}")
+    cache.delete(f"ip_email_attempts_{ip}")
+    
+    # Clear throttling cache keys - note that in default Django memory cache,
+    # we can't easily get all keys, so we'll clear common throttle patterns
+    throttle_patterns = [
+        f"throttle_anon_{ip}",
+        f"throttle_user_{ip}",
+        f"throttle_login_{ip}",
+    ]
+    
+    for key in throttle_patterns:
+        cache.delete(key)
+        
+    return JsonResponse({
+        "success": True,
+        "message": f"Rate limiting reset for IP: {ip}",
+    })
