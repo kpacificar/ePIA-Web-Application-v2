@@ -188,7 +188,9 @@ function LoginForm() {
       const res = await api.post("/api/token/", userData);
       localStorage.setItem(ACCESS_TOKEN, res.data.access);
       localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-      navigate("/");
+
+      // Navigate to the dashboard route where Home component is rendered
+      navigate("/dashboard");
     } catch (error) {
       // Handle rate limiting errors
       if (error.response && error.response.status === 429) {

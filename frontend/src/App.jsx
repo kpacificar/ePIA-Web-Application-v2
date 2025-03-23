@@ -51,16 +51,24 @@ function App() {
           }
         />
 
+        {/* Dashboard route - only for authenticated users */}
+        <Route
+          path="/dashboard"
+          element={
+            <Layout isAuthenticated={true}>
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            </Layout>
+          }
+        />
+
         {/* LandingPage with NavBar */}
         <Route
           path="/"
           element={
             isAuthenticated ? (
-              <Layout isAuthenticated={true}>
-                <ProtectedRoute>
-                  <Home />
-                </ProtectedRoute>
-              </Layout>
+              <Navigate to="/dashboard" />
             ) : (
               <Layout isAuthenticated={false}>
                 <LandingPage />
