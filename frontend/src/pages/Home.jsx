@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
+import Sidebar from "../components/layout/Sidebar";
 import "../styles/Home.css";
 
-function Home() {
+function Dashboard() {
   const [userProfile, setUserProfile] = useState({
     first_name: "",
     last_name: "",
@@ -78,16 +79,16 @@ function Home() {
   };
 
   return (
-    <div className="home-container">
-      <div className="profile-card">
-        <h2>Welcome to E-PIA</h2>
-
+    <div className="dashboard-container">
+      <Sidebar userProfile={userProfile} />
+      <div className="dashboard-content">
         {loading ? (
           <p>Loading user information...</p>
         ) : error ? (
           <div className="error-message">{error}</div>
         ) : (
           <div className="user-info">
+            <h2>Welcome to E-PIA</h2>
             <div className="info-row">
               <span className="info-label">First Name:</span>
               <span className="info-value">
@@ -115,15 +116,14 @@ function Home() {
                 {userProfile.company_name || "Not available"}
               </span>
             </div>
+            <button className="logout-button" onClick={handleLogout}>
+              Logout
+            </button>
           </div>
         )}
-
-        <button className="logout-button" onClick={handleLogout}>
-          Logout
-        </button>
       </div>
     </div>
   );
 }
 
-export default Home;
+export default Dashboard;

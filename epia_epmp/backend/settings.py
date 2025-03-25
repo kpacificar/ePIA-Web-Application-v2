@@ -218,13 +218,3 @@ ADMIN_EMAIL = 'admin@example.com'  # Change this in production
 # EMAIL_USE_TLS = True
 # EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 # EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-
-# Security settings - developer only
-DEVELOPER_TOKEN = secrets.token_hex(32) if DEBUG else None
-
-# Print the token only when starting the development server
-if DEBUG and os.environ.get('RUN_MAIN') != 'true':  # Only print once when Django restarts
-    print("\n\n====================== DEVELOPER TOKEN ======================")
-    print(f"Developer token for reset endpoint: {DEVELOPER_TOKEN}")
-    print("Keep this secure and use it for development testing only!")
-    print("=============================================================\n\n")

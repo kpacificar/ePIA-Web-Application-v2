@@ -1,0 +1,50 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Your rule content
+
+- You can @ files here
+- You can use markdown but dont have to
+
+
+# Rules for Developing a Web Application with Django Rest Framework, CSS, and React
+
+## General Rules
+1. **Set Up a Clean Project Structure:**
+   - Keep **backend (Django/DRF)** and **frontend (React)** in separate directories.
+   - Organize Django apps logically (e.g., `users`, `products`, `orders`).
+
+
+## Backend - Django Rest Framework (DRF)
+2. **Use Django REST Framework Best Practices:**
+   - Define **serializers** for data validation.
+   - Use **viewsets & routers** for cleaner API structure.
+   - Implement **authentication (JWT, OAuth, or Session Auth)**.
+
+3. **Security Best Practices:**
+   - Hide **sensitive credentials** using `.env` files & `django-environ`.
+   - Use **CORS headers** (`django-cors-headers`) for React communication.
+   - Prevent CSRF attacks when using **session authentication**.
+
+4. **API Documentation & Testing:**
+   - Use **Swagger/OpenAPI** (`drf-yasg` or `drf-spectacular`).
+   - Write tests with **Django’s TestCase** and `pytest`.
+
+## Frontend - React
+5. **React Structure & State Management:**
+   - Use **functional components** with hooks.
+
+6. **API Calls & Data Fetching:**
+   - Use **Axios** or Fetch API to communicate with Django.
+   - Handle **loading, success, and error states** properly.
+
+7. **Component Styling:**
+   - Maintain a **consistent design system**.
+
+8. **Routing & Navigation:**
+   - Use **React Router** for page navigation.
+   - Implement **protected routes** for authentication.
+

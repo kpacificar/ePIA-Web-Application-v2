@@ -9,16 +9,6 @@ import Layout from "./components/layout/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ACCESS_TOKEN } from "./constants";
 
-function Logout() {
-  localStorage.clear();
-  return <Navigate to="/" />;
-}
-
-function RegisterAndLogout() {
-  localStorage.clear();
-  return <Register />;
-}
-
 function App() {
   const isAuthenticated = !!localStorage.getItem(ACCESS_TOKEN);
 
@@ -29,25 +19,29 @@ function App() {
         <Route
           path="/login"
           element={
-            <Layout isAuthenticated={false}>
-              <Login />
-            </Layout>
-          }
-        />
-        <Route
-          path="/logout"
-          element={
-            <Layout isAuthenticated={false}>
-              <Logout />
-            </Layout>
+            isAuthenticated ? (
+              <Layout isAuthenticated={true}>
+                <Navigate to="/dashboard" replace />
+              </Layout>
+            ) : (
+              <Layout isAuthenticated={false}>
+                <Login />
+              </Layout>
+            )
           }
         />
         <Route
           path="/signup"
           element={
-            <Layout isAuthenticated={false}>
-              <RegisterAndLogout />
-            </Layout>
+            isAuthenticated ? (
+              <Layout isAuthenticated={true}>
+                <Navigate to="/dashboard" replace />
+              </Layout>
+            ) : (
+              <Layout isAuthenticated={false}>
+                <Register />
+              </Layout>
+            )
           }
         />
 
@@ -68,7 +62,9 @@ function App() {
           path="/"
           element={
             isAuthenticated ? (
-              <Navigate to="/dashboard" />
+              <Layout isAuthenticated={true}>
+                <Navigate to="/dashboard" replace />
+              </Layout>
             ) : (
               <Layout isAuthenticated={false}>
                 <LandingPage />

@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import "../styles/Form.css";
 import LoadingIndicator from "./LoadingIndicator";
+import DevTools from "./DevTools";
 
 // Constants for localStorage keys
 const RATE_LIMIT_KEY = "login_rate_limited";
@@ -18,7 +19,6 @@ function LoginForm() {
   const [isRateLimited, setIsRateLimited] = useState(false);
   const [cooldownTime, setCooldownTime] = useState(0);
   const [showDevTools, setShowDevTools] = useState(false);
-  const [devStatus, setDevStatus] = useState("");
   const navigate = useNavigate();
 
   // Load rate limit status from localStorage on component mount
@@ -75,80 +75,6 @@ function LoginForm() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
-
-  // Reset rate limiting (dev only)
-  const resetRateLimiting = () => {
-    localStorage.removeItem(RATE_LIMIT_KEY);
-    localStorage.removeItem(COOLDOWN_TIME_KEY);
-    localStorage.removeItem(COOLDOWN_END_KEY);
-    setIsRateLimited(false);
-    setCooldownTime(0);
-    setErrors({});
-    setDevStatus("Rate limiting reset in frontend");
-  };
-
-  // Check server-side blocking status
-  const checkServerStatus = async () => {
-    try {
-      // Simple request to trigger rate limit check
-      await api.post("/api/token/", { email: "", password: "" });
-      setDevStatus("Not rate limited on server");
-    } catch (error) {
-      if (error.response && error.response.status === 429) {
-        const remainingSeconds = error.response.data.remaining_seconds || 0;
-        setDevStatus(
-          `Rate limited on server: ${remainingSeconds} seconds remaining`
-        );
-      } else {
-        setDevStatus(
-          "Error checking status: " +
-            (error.response?.data?.detail || error.message)
-        );
-      }
-    }
-  };
-
-  // Reset server rate limiting
-  const resetServerRateLimiting = async () => {
-    try {
-      // Prompt for developer token and URL
-      const devToken = prompt(
-        "Enter developer token (check server console during startup):"
-      );
-      if (!devToken) {
-        setDevStatus("Reset cancelled - no token provided");
-        return;
-      }
-
-      const resetUrl = prompt(
-        "Enter developer reset URL path:",
-        "/_internal/dev/.../reset/"
-      );
-      if (!resetUrl) {
-        setDevStatus("Reset cancelled - no URL provided");
-        return;
-      }
-
-      const response = await api.post(resetUrl, null, {
-        headers: {
-          "X-Dev-Token": devToken,
-        },
-      });
-
-      setDevStatus(response.data.message || "Server rate limiting reset");
-      // Also reset frontend
-      resetRateLimiting();
-    } catch (error) {
-      if (error.response?.status === 404) {
-        setDevStatus("Invalid developer token or URL");
-      } else {
-        setDevStatus(
-          "Error resetting server: " +
-            (error.response?.data?.error || error.message)
-        );
-      }
-    }
-  };
 
   const validateForm = () => {
     let tempErrors = {};
@@ -234,59 +160,43 @@ function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="form-container">
+    <form onSubmit={handleSubmit} className="form-container" autoComplete="on">
       <h1>Log in</h1>
-      {/* Developer tools section (hidden by default) */}
+      {/* Use the DevTools component with new props */}
       {showDevTools && (
-        <div className="dev-tools">
-          <div className="dev-header">Developer Tools</div>
-          <div className="dev-buttons">
-            <button
-              type="button"
-              className="dev-button"
-              onClick={resetRateLimiting}
-            >
-              Reset Frontend
-            </button>
-            <button
-              type="button"
-              className="dev-button"
-              onClick={checkServerStatus}
-            >
-              Check Status
-            </button>
-            <button
-              type="button"
-              className="dev-button"
-              onClick={resetServerRateLimiting}
-            >
-              Reset Server
-            </button>
-          </div>
-          {devStatus && <div className="dev-status">{devStatus}</div>}
-          <div className="dev-tip">Press Ctrl+Shift+D to hide this panel</div>
-        </div>
+        <DevTools
+          setIsRateLimited={setIsRateLimited}
+          setCooldownTime={setCooldownTime}
+        />
       )}
       <div className="form-group">
-        <label>Email Address</label>
+        <label htmlFor="email">Email Address</label>
         <input
+          id="email"
+          name="email"
           className="form-input"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="youremail@domain.com"
           disabled={isRateLimited}
+          autoComplete="username"
+          required
         />
       </div>
       <div className="form-group">
-        <label>Password</label>
+        <label htmlFor="password">Password</label>
         <input
+          id="password"
+          name="password"
           className="form-input"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Enter your password"
           disabled={isRateLimited}
+          autoComplete="current-password"
+          required
         />
       </div>
 

@@ -152,10 +152,10 @@ class EmailTokenObtainPairView(APIView):
         failed_attempts = cache.get(cache_key, 0)
         failed_attempts += 1
         
-        # Block for 15 minutes after 5 failed attempts
+        # Block for 60 seconds after 5 failed attempts (changed from 15 minutes)
         if failed_attempts >= 5:
-            block_until = timezone.now() + datetime.timedelta(minutes=15)
-            cache.set(f"ip_blocked_{ip_address}", block_until, timeout=60*15)
+            block_until = timezone.now() + datetime.timedelta(seconds=60)
+            cache.set(f"ip_blocked_{ip_address}", block_until, timeout=60)
         
         # Store failed attempts for 1 hour
         cache.set(cache_key, failed_attempts, timeout=60)
@@ -261,9 +261,9 @@ def custom_exception_handler(exc, context):
         
     return response
 
-# Developer-only endpoint to reset rate limiting
+# Simple endpoint to reset rate limiting
 @csrf_exempt
-def dev_reset_rate_limits(request):
+def reset_rate_limits(request):
     """Reset rate limiting for development purposes only"""
     # Only available in DEBUG mode for security
     if not settings.DEBUG:
@@ -271,12 +271,6 @@ def dev_reset_rate_limits(request):
         
     if request.method != 'POST':
         return JsonResponse({"error": "Only POST method is allowed"}, status=405)
-    
-    # Require a special developer token in the request
-    dev_token = request.POST.get('dev_token') or request.headers.get('X-Dev-Token')
-    if not dev_token or dev_token != getattr(settings, 'DEVELOPER_TOKEN', None):
-        # Return same error as 404 to hide the endpoint existence
-        return JsonResponse({"error": "Not Found"}, status=404)
         
     # Get client IP address
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -304,4 +298,44 @@ def dev_reset_rate_limits(request):
     return JsonResponse({
         "success": True,
         "message": f"Rate limiting reset for IP: {ip}",
+    })
+
+# Simple status endpoint
+@csrf_exempt
+def check_status(request):
+    """Check server status and rate limiting"""
+    # Get client IP address
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+        
+    # Check if IP is rate limited
+    is_blocked = cache.get(f"ip_blocked_{ip}")
+    failed_attempts = cache.get(f"failed_login_{ip}", 0)
+    
+    if is_blocked:
+        remaining_seconds = int((is_blocked - timezone.now()).total_seconds())
+        if remaining_seconds > 0:
+            return JsonResponse({
+                "status": "rate_limited",
+                "message": f"Rate limited for {remaining_seconds} more seconds",
+                "remaining_seconds": remaining_seconds
+            })
+    
+    # Check if any throttling is active
+    for throttle_type in ["anon", "user", "login"]:
+        key = f"throttle_{throttle_type}_{ip}"
+        if cache.get(key):
+            return JsonResponse({
+                "status": "throttled",
+                "message": f"Throttled ({throttle_type})",
+                "throttle_type": throttle_type
+            })
+    
+    return JsonResponse({
+        "status": "ok",
+        "message": "Server is running normally",
+        "failed_attempts": failed_attempts
     })

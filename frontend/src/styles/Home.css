@@ -5,7 +5,7 @@
   align-items: center;
   min-height: 100vh;
   padding: 2rem;
-  font-family: Arial, sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 /* Profile card styling */
@@ -67,7 +67,7 @@
 
 /* Container for the whole page */
 div {
-  font-family: Arial, sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 /* Styles for the notes section */
@@ -143,4 +143,62 @@ form input[type="submit"]:hover {
   border-radius: 4px;
   margin-bottom: 1.5rem;
   text-align: center;
+}
+
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 20px;
+  margin-left: 290px;
+  transition: all 0.5s ease;
+}
+
+.sidebar.close ~ .dashboard-content {
+  margin-left: 70px;
+}
+
+.user-info {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.user-info h2 {
+  margin-bottom: 30px;
+  color: #333;
+  font-size: 24px;
+}
+
+.info-row {
+  display: flex;
+  margin-bottom: 20px;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #666;
+  width: 150px;
+}
+
+.info-value {
+  color: #333;
+}
+
+.error-message {
+  color: #dc3545;
+  padding: 20px;
+  background: #f8d7da;
+  border-radius: 5px;
+  margin: 20px 0;
 }

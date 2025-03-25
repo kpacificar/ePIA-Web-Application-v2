@@ -7,11 +7,7 @@ const Layout = ({ children, isAuthenticated }) => {
     <div className="layout">
       {!isAuthenticated && <NavBar />}
 
-      {isAuthenticated ? (
-        <div className="authenticated-content">{children}</div>
-      ) : (
-        <div className="main-section">{children}</div>
-      )}
+      {isAuthenticated ? <>{children}</> : <>{children}</>}
     </div>
   );
 };
