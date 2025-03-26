@@ -36,6 +36,7 @@
   z-index: 100;
   transition: all 0.5s ease;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1), 4px 0px 8px rgba(0, 0, 0, 0.1);
+  padding-top: 16px;
 }
 
 .sidebar.close {
@@ -155,7 +156,6 @@
 #help-support > ul,
 #feedback > ul {
   position: absolute;
-  display: none;
 }
 
 #companies,
@@ -277,8 +277,6 @@
 }
 
 .sidebar .nav-links li .sub-menu.blank {
-  opacity: 1;
-  pointer-events: auto;
   padding: 3px 20px 6px 16px;
   opacity: 0;
   pointer-events: none;
@@ -446,13 +444,13 @@
 /* Show submenu in collapsed state on hover */
 .sidebar.close .nav-links li:hover > ul,
 .sidebar.close .nav-links li:hover > ul.sub-menu.blank {
-  display: block;
+  display: block !important;
   position: absolute;
   top: 0;
   left: 70px;
   background: var(--submenu-color);
-  padding: 10px;
-  border-radius: 6px;
+  padding: 10px 30px 10px 10px;
+  border-radius: 0 12px 12px 12px;
   opacity: 1;
   pointer-events: auto;
   transition: 0s;
@@ -462,4 +460,6 @@
 .sidebar.close .nav-links li:hover > ul.sub-menu.blank {
   width: max-content; /* Adjust width to content */
   white-space: nowrap; /* Prevent text wrapping */
+  top: 0; /* Align with parent item */
+  transform: translateY(0); /* Reset any transform */
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "../../styles/layout/Sidebar.css";
 
@@ -7,12 +7,23 @@ const Sidebar = ({ userProfile }) => {
   const [activeSubmenu, setActiveSubmenu] = useState(null);
   const location = useLocation();
 
+  // Load sidebar state from localStorage on component mount
+  useEffect(() => {
+    const savedState = localStorage.getItem("sidebarState");
+    if (savedState !== null) {
+      setIsOpen(savedState === "open");
+    }
+  }, []);
+
   const handleArrowClick = (menuId) => {
     setActiveSubmenu(activeSubmenu === menuId ? null : menuId);
   };
 
   const toggleSidebar = () => {
-    setIsOpen(!isOpen);
+    const newState = !isOpen;
+    setIsOpen(newState);
+    // Save to localStorage
+    localStorage.setItem("sidebarState", newState ? "open" : "closed");
   };
 
   return (
@@ -32,8 +43,9 @@ const Sidebar = ({ userProfile }) => {
               <span className="link_name">Dashboard</span>
             </Link>
             <ul className="sub-menu blank">
-              <li>
-                <span className="link-name">Dashboard</span>
+              <li className="menu-items">
+                <span>&bull;</span>
+                <Link to="/dashboard">Dashboard</Link>
               </li>
             </ul>
           </li>
@@ -145,8 +157,9 @@ const Sidebar = ({ userProfile }) => {
               <span className="link_name">Help & Support</span>
             </Link>
             <ul className="sub-menu blank">
-              <li>
-                <span className="link-name">Help & Support</span>
+              <li className="menu-items">
+                <span>&bull;</span>
+                <Link to="/dashboard">Help & Support</Link>
               </li>
             </ul>
           </li>
@@ -157,8 +170,9 @@ const Sidebar = ({ userProfile }) => {
               <span className="link_name">Give Feedback</span>
             </Link>
             <ul className="sub-menu blank">
-              <li>
-                <span className="link-name">Give Feedback</span>
+              <li className="menu-items">
+                <span>&bull;</span>
+                <Link to="/dashboard">Give Feedback</Link>
               </li>
             </ul>
           </li>
